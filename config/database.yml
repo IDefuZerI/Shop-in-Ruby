@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  username: postgres
+  password: 3217
+  pool: 5
+
+development:
+  <<: *default
+  database: TempWorkRuby_development
+
+test:
+  <<: *default
+  database: TempWorkRuby_test
+
+production:
+  <<: *default
+  database: TempWorkRuby_production
+  username: postgres
+  password: 3217

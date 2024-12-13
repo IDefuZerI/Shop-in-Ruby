@@ -1,0 +1,8 @@
+// update_cart.js.erb
+
+// Оновлюємо кількість і загальну ціну для конкретного товару
+document.querySelector("#quantity-<%= @cart_item.id %>").textContent = "<%= @cart_item.quantity %>";
+document.querySelector("#total-price-<%= @cart_item.id %>").textContent = "$<%= number_with_precision(@cart_item.total_price, precision: 2) %>";
+
+// Оновлюємо загальну суму кошика
+document.querySelector("#cart-total-price").textContent = "$<%= number_with_precision(@cart_total_price, precision: 2) %>";

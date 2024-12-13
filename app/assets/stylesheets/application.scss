@@ -1,0 +1,186 @@
+/* Основні стилі для всього магазину */
+body {
+    background: #f9f9fb; /* Світлий фон */
+    color: #222;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Стилі для карток товарів */
+.product-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Зменшені тіні */
+    padding: 15px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.product-card:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02); /* Легке збільшення */
+}
+
+/* Стилі для кнопок */
+.btn-primary {
+    background: #007bff;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1em;
+    padding: 8px 15px;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+/* Стилі для бокової панелі фільтрів */
+.filters {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.list-group {
+    padding: 0;
+    margin: 0;
+}
+
+/* Кожен елемент списку */
+.filter-item {
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    font-size: 1em;
+    color: #007bff;
+    padding: 10px 0;
+    background: #ffffff;
+    border-bottom: 1px solid #f0f0f0; /* Тонка роздільна лінія */
+}
+
+.filter-item:last-child {
+    border-bottom: none; /* Прибираємо лінію для останнього елемента */
+}
+
+/* При наведенні */
+.filter-item:hover {
+    background: #f0f0f0; /* Легкий сірий фон */
+}
+
+/* Активний фільтр */
+.filter-item.active {
+    background-color: transparent; /* Прибираємо фон */
+    color: #007bff; /* Синій текст */
+    font-weight: bold;
+    border: none; /* Прибираємо будь-які рамки */
+    border-left: 4px solid #007bff; /* Додаємо вертикальну лінію зліва для візуального акценту */
+    padding-left: 10px; /* Робимо текст трохи відступленим */
+}
+
+
+
+/* Посилання у фільтрах */
+.filter-link {
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    color: inherit; /* Зберігає колір тексту від батьківського елемента */
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Заголовок фільтрів */
+.filters h5 {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Пошуковий рядок */
+.form-control {
+    border: none; /* Без рамки */
+    background: #f7f8fa; /* Світлий фон */
+    border-radius: 30px; /* Закруглені краї */
+    padding: 8px 20px 8px 30px; /* Відступи для тексту */
+    font-size: 1em;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Легка тінь */
+}
+
+.form-control:focus {
+    outline: none; /* Прибираємо стандартний фокус */
+    box-shadow: 0px 0px 12px rgba(0, 123, 255, 0.3); /* Легкий ефект при фокусуванні */
+}
+
+/* Іконка пошуку */
+.form-control::placeholder {
+    color: #888; /* Світлий колір для тексту підказки */
+}
+
+.search-btn {
+    background-color: #007bff; /* Синій колір кнопки */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    position: absolute;
+    right: 10px; /* Відступ від правого краю */
+    top: 50%;
+    transform: translateY(-50%); /* Вирівнюємо по вертикалі */
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: #0056b3; /* Темніший синій при наведенні */
+}
+
+/* Окреме поле для пошукового запиту */
+.search-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+
+/* Навбар */
+.navbar {
+    background: #007bff;
+    border-radius: 0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.8em;
+    color: #ffffff;
+}
+
+.navbar-nav .nav-link {
+    color: #ffffff;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #dbeafe;
+}
+
+/* Футер */
+footer {
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    background: #0056b3;
+    color: #fff;
+    padding: 15px 0;
+    margin-top: 30px;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
