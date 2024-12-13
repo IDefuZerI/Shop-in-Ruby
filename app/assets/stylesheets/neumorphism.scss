@@ -1,0 +1,44 @@
+.neumorphism {
+  background: #F0F0F3; /* Основний фон */
+  border-radius: 15px; /* Закруглені краї */
+  box-shadow: 8px 8px 15px #D1D9E6, -8px -8px 15px #FFFFFF; /* Ефект неоморфізму */
+  padding: 20px; /* Внутрішній відступ */
+}
+
+.neumorphism-hover:hover {
+  box-shadow: inset 8px 8px 15px #D1D9E6, inset -8px -8px 15px #FFFFFF; /* Внутрішній ефект при наведенні */
+  transform: scale(1.02); /* Легке збільшення при наведенні */
+  transition: all 0.3s ease-in-out; /* Плавність переходу */
+}
+
+.main-background {
+  background-color: #F0F0F3; /* Світлий фон */
+  min-height: 100vh; /* Займає весь екран */
+  padding: 20px; /* Відступи */
+}
+
+.product-card {
+  padding: 20px; /* Відступи */
+  margin-bottom: 20px; /* Відступ між картками */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Анімація при наведенні */
+}
+
+.product-card:hover {
+  box-shadow: 10px 10px 20px #D1D9E6, -10px -10px 20px #FFFFFF; /* Ефект при наведенні */
+  transform: scale(1.05); /* Легке збільшення */
+}
+
+.card-title {
+  font-size: 1.5em; /* Розмір заголовку */
+  font-weight: bold; /* Жирний текст */
+  color: #333; /* Колір тексту */
+}
+
+.btn-primary {
+  background-color: #3D8BFF; /* Синій фон кнопки */
+  border: none; /* Прибрана рамка */
+  color: #fff; /* Білий текст */
+  padding: 10px 20px; /* Відступи кнопки */
+  font-size: 1.2em; /* Розмір тексту */
+  border-radius: 50px; /* Закруглені краї */
+}

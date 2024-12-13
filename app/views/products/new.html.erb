@@ -1,0 +1,116 @@
+<h1 class="text-center my-4" style="font-size: 2em; font-weight: bold; color: #333;">Додати новий товар</h1>
+
+<%= form_with model: @product, url: products_path, local: true do |f| %>
+  <div class="card shadow-sm mt-4">
+    <div class="card-body">
+
+      <div class="mb-3">
+        <%= f.label :name, 'Назва продукту' %>
+        <%= f.text_field :name, class: 'form-control' %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :description, 'Опис' %>
+        <%= f.text_area :description, class: 'form-control' %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :price, 'Ціна ($)' %>
+        <%= f.number_field :price, step: 0.01, class: 'form-control' %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :category_id, 'Категорія' %>
+        <%= f.collection_select :category_id, @categories, :id, :name, { prompt: 'Виберіть категорію' }, { class: 'form-control' } %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :weight, 'Вага (г)' %>
+        <%= f.number_field :weight, class: 'form-control' %>
+      </div>
+
+
+      <div class="mb-3">
+        <%= f.label :manufacturer, 'Виробник' %>
+        <%= f.text_field :manufacturer, class: 'form-control' %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :origin_country, 'Країна виробництва' %>
+        <%= f.text_field :origin_country, class: 'form-control' %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :image, 'Посилання на зображення' %>
+        <%= f.text_field :image, class: 'form-control' %>
+      </div>
+
+      <div class="text-end">
+        <%= f.submit 'Додати товар', class: 'btn btn-primary btn-lg' %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="text-center mt-4">
+  <%= link_to "Назад до списку товарів", products_path, class: "btn btn-secondary" %>
+</div>
+
+<style>
+    /* Основні стилі для сторінки додавання товару */
+    h1 {
+        font-size: 2em;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    /* Стилі для форми */
+    .card {
+        max-width: 800px;
+        margin: 0 auto;
+        border-radius: 10px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 1em;
+        border: 1px solid #ddd;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+    }
+
+    /* Кнопка "Додати товар" */
+    .btn-primary {
+        font-size: 1.1em;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+
+    /* Кнопка "Назад до списку товарів" */
+    .btn-secondary {
+        font-size: 1.1em;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+</style>

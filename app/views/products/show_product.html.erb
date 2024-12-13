@@ -1,0 +1,149 @@
+<div class="container mt-4">
+  <div class="row">
+    <!-- Ліва частина: картинка -->
+    <div class="col-md-6 d-flex justify-content-center mb-4">
+      <div class="product-image-wrapper border rounded p-3">
+        <%= image_tag asset_path("products/#{@product.image}"), class: "img-fluid rounded", alt: @product.name, style: "max-height: 500px; object-fit: cover;" %>
+      </div>
+    </div>
+
+    <!-- Права частина: інформація про товар -->
+    <div class="col-md-6">
+      <div class="product-info p-3">
+        <h2 class="product-title"><%= @product.name %></h2>
+        <p><strong>Вага:</strong> <%= @product.weight %> кг</p>
+
+        <!-- Додаткова інформація про товар -->
+        <p><strong>Виробник:</strong> <%= @product.manufacturer %></p>
+        <p><strong>Країна виробництва:</strong> <%= @product.origin_country %></p>
+        <p><strong>Категорія:</strong> <%= @product.category.name %></p>
+
+        <h4 class="section-title">Опис товару</h4>
+        <p><%= @product.description %></p>
+
+        <!-- Ціна та кнопка додавання до кошика -->
+        <p><strong>Ціна:</strong> <span class="price"><%= number_to_currency(@product.price, unit: '$') %></span></p>
+        <%= button_to 'Додати до кошика', add_to_cart_path(@product), method: :post, class: "btn btn-primary btn-lg mt-3 buy-button", data: { product_id: @product.id } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Роздільник між товаром та відгуками -->
+  <hr class="my-4 separator">
+
+  <h3>Відгуки</h3>
+
+  <!-- Перевірка на авторизацію користувача для додавання відгуку -->
+  <% if logged_in? %>
+    <%= form_with(model: [ @product, @product.reviews.new ], local: true) do |f| %>
+      <div class="mb-3 border p-3 rounded">
+        <%= f.label :rating, 'Оцінка' %>
+        <%= f.select :rating, options_for_select(1..5), {}, class: 'form-control' %>
+      </div>
+
+      <div class="mb-3 border p-3 rounded">
+        <%= f.label :comment, 'Коментар' %>
+        <%= f.text_area :comment, class: 'form-control' %>
+      </div>
+
+      <%= f.submit 'Додати відгук', class: 'btn btn-primary' %>
+    <% end %>
+  <% else %>
+    <p>Будь ласка, увійдіть або строріть аккаунт, щоб залишити відгук.</p>
+  <% end %>
+
+  <!-- Роздільна лінія між "Відгуки" та "Всі відгуки" -->
+  <hr class="my-4 section-divider">
+
+  <!-- Виведення відгуків -->
+  <h4>Відгуки користувачів:</h4>
+  <ul id="reviews-list" class="list-unstyled">
+    <% if @product.reviews.count > 0 %>
+      <% @product.reviews.offset(0).each do |review| %>
+        <li class="review-item mb-3 p-3 border rounded" style="background-color: #f9f9f9;">
+          <strong>Оцінка: <%= review.rating %></strong>
+          <p><%= review.comment %></p>
+          <% if review.user.present? %>
+            <small>— від <%= review.user.name %></small>
+          <% end %>
+        </li>
+      <% end %>
+    <% else %>
+      <li>Відгуків ще немає, станьте першими, хто його напише!</li>
+    <% end %>
+  </ul>
+</div>
+
+<!-- CSS для стилізації -->
+<style>
+    .product-title {
+        font-size: 2em;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .section-title {
+        font-size: 1.2em;
+        color: #555;
+        margin-top: 1em;
+    }
+
+    .price {
+        font-size: 1.6em;
+        font-weight: bold;
+        color: #dd0000;
+    }
+
+    .buy-button {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .separator {
+        border-top: 2px solid #ddd;
+    }
+
+    .section-divider {
+        border-top: 1px solid #ddd;
+        margin: 20px 0;
+    }
+
+    .product-image-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+    }
+
+    .product-info {
+        padding: 20px;
+    }
+
+    .review-item {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+    }
+
+    .hover-effect:hover {
+        transform: scale(1.05);
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Flexbox для правої частини */
+    .col-md-6 {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    /* Підтримка адаптивності */
+    @media (max-width: 768px) {
+        .product-image-wrapper {
+            text-align: center;
+        }
+    }
+</style>

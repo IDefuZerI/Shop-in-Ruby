@@ -1,0 +1,5 @@
+// Оновлюємо список відгуків на сторінці
+$('#reviews-list').append('<%= j render @review %>');
+
+// Очищаємо форму
+$('form').find("input[type=text], textarea").val("");

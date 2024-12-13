@@ -1,0 +1,324 @@
+<h1 class="text-center display-4 fw-bold mb-5">Корзина</h1>
+
+<div class="cart-container">
+  <div class="cart-items">
+    <% @cart_items.each do |item| %>
+      <div class="cart-item" id="cart-item-<%= item.id %>">
+        <div class="item-details">
+          <%= image_tag asset_path("products/#{item.product.image}"), class: "item-image", alt: item.product.name %>
+          <div class="item-info">
+            <span class="item-name"><%= item.product.name %> (<%= item.product.weight %> кг)</span>
+            <span class="item-price">Ціна: <%= number_to_currency(item.product.price, unit: '$') %></span>
+          </div>
+        </div>
+        <div class="item-quantity" id="quantity-<%= item.id %>">
+          <span>Кількість: <%= item.quantity %></span>
+          <div class="quantity-buttons">
+            <%= button_to '+', increment_cart_item_path(item), method: :patch, remote: true, class: "btn btn-increment" %>
+            <%= button_to '-', decrement_cart_item_path(item), method: :patch, remote: true, class: "btn btn-decrement" %>
+          </div>
+        </div>
+        <div class="item-total-price" id="total-price-<%= item.id %>">
+          Загальна ціна: <%= number_to_currency(item.total_price, unit: '$') %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<h3 class="text-end mt-4 total-amount">
+  Загальна сума:
+  <span id="cart-total-price" class="text-danger">
+    $<%= number_with_precision(@cart_items.sum(&:total_price), precision: 2) %>
+  </span>
+</h3>
+
+<!-- Кнопка оформлення замовлення з відступом зверху, переміщена на середину -->
+<div class="checkout-button-container mt-4">
+  <button class="btn btn-success btn-lg" id="checkout-button">Оформити замовлення</button>
+</div>
+
+<!-- Модальне вікно для оформлення замовлення -->
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: 35px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); background: linear-gradient(135deg, #ffffff, #e4e4e4);">
+      <!-- Перше модальне вікно: Вибір доставки -->
+      <div class="modal-header" style="background-color: #343a40; color: #ffffff; border-radius: 35px 35px 0 0;">
+        <h5 class="modal-title" id="checkoutModalLabel">Оформлення замовлення - Крок 1: Доставка</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="padding: 60px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <div class="mb-4">
+          <label class="form-label" style="font-weight: bold; color: #444;">Ім'я та Прізвище:</label>
+          <p style="background: #f0f0f0; padding: 20px; border-radius: 20px; box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.15);"><%= current_user.name %> <%= current_user.surname %></p>
+        </div>
+        <div class="mb-4">
+          <label class="form-label" style="font-weight: bold; color: #444;">Номер телефону:</label>
+          <p style="background: #f0f0f0; padding: 20px; border-radius: 20px; box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.15);"><%= current_user.phone_number %></p>
+        </div>
+        <div class="mb-4">
+          <label class="form-label" style="font-weight: bold; color: #444;">Адреса:</label>
+          <p style="background: #f0f0f0; padding: 20px; border-radius: 20px; box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.15);"><%= current_user.address %></p>
+        </div>
+
+        <h5 style="font-weight: bold; color: #444;">Виберіть спосіб доставки:</h5>
+        <div class="form-check mb-3" style="background: #f9f9f9; padding: 15px; border-radius: 15px;">
+          <input class="form-check-input" type="radio" name="deliveryOption" id="novaPostOffice" value="Відділення Нова Пошта" checked>
+          <label class="form-check-label" for="novaPostOffice">Відділення Нова Пошта</label>
+        </div>
+        <div class="form-check mb-3" style="background: #f9f9f9; padding: 15px; border-radius: 15px;">
+          <input class="form-check-input" type="radio" name="deliveryOption" id="ukrPostOffice" value="Відділення Укрпошта">
+          <label class="form-check-label" for="ukrPostOffice">Відділення Укрпошта</label>
+        </div>
+        <div class="form-check mb-3" style="background: #f9f9f9; padding: 15px; border-radius: 15px;">
+          <input class="form-check-input" type="radio" name="deliveryOption" id="courierNova" value="Кур'єром Нова Пошта">
+          <label class="form-check-label" for="courierNova">Кур'єром Нова Пошта</label>
+        </div>
+        <div class="form-check mb-3" style="background: #f9f9f9; padding: 15px; border-radius: 15px;">
+          <input class="form-check-input" type="radio" name="deliveryOption" id="novaPostamat" value="Поштомат Нова Пошта">
+          <label class="form-check-label" for="novaPostamat">Поштомат Нова Пошта</label>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top: none; padding: 50px;">
+        <button type="button" class="btn btn-primary btn-lg" id="continueToPayment" style="border-radius: 50px; background: #0056b3; color: #ffffff; padding: 20px 40px;">Продовжити</button>
+      </div>
+    </div>
+
+    <!-- Друге модальне вікно: Вибір способу оплати -->
+    <div class="modal-content" id="paymentModalContent" style="display: none; border-radius: 35px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); background: linear-gradient(135deg, #ffffff, #e4e4e4);">
+      <div class="modal-header" style="background-color: #343a40; color: #ffffff; border-radius: 35px 35px 0 0;">
+        <h5 class="modal-title">Оформлення замовлення - Крок 2: Оплата</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="padding: 60px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <h5 style="font-weight: bold; color: #444;">Виберіть спосіб оплати:</h5>
+        <div class="form-check mb-3" style="background: #f9f9f9; padding: 15px; border-radius: 15px;">
+          <input class="form-check-input" type="radio" name="paymentOption" id="cashOnDelivery" value="При отриманні" checked>
+          <label class="form-check-label" for="cashOnDelivery">При отриманні</label>
+        </div>
+        <div class="form-check mb-3" style="background: #f9f9f9; padding: 15px; border-radius: 15px;">
+          <input class="form-check-input" type="radio" name="paymentOption" id="onlinePayment" value="Онлайн-оплата">
+          <label class="form-check-label" for="onlinePayment">Онлайн-оплата</label>
+        </div>
+
+        <!-- Додаткові поля для даних картки -->
+        <div id="cardDetails" style="display: none; margin-top: 40px; padding: 30px; background: #f0f0f0; border-radius: 25px; box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);">
+          <h5 style="font-weight: bold; color: #444;">Дані картки</h5>
+          <div class="mb-4">
+            <label for="cardNumber" class="form-label">Номер картки</label>
+            <input type="text" class="form-control" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+          </div>
+          <div class="mb-4">
+            <label for="expiryDate" class="form-label">Дата закінчення</label>
+            <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" maxlength="5">
+          </div>
+          <div class="mb-4">
+            <label for="cvv" class="form-label">CVV</label>
+            <input type="password" class="form-control" id="cvv" placeholder="XXX" maxlength="3">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top: none; padding: 50px;">
+        <button type="button" class="btn btn-success btn-lg" id="confirmOrder" style="border-radius: 50px; background: #218838; color: #ffffff; padding: 20px 40px;">Підтвердити</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CSS for styling -->
+<style>
+    .cart-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-item {
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cart-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .item-details {
+        display: flex;
+        align-items: center;
+    }
+
+    .item-image {
+        width: 100px;
+        height: auto;
+        margin-right: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .item-info {
+        flex-grow: 1;
+    }
+
+    .item-name {
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    .item-price {
+        color: #555;
+        margin-top: 5px;
+    }
+
+    .item-quantity {
+        margin-top: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .quantity-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-increment, .btn-decrement {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-increment:hover, .btn-decrement:hover {
+        background-color: #495057;
+    }
+
+    .item-total-price {
+        font-weight: bold;
+        color: #ff5722;
+        margin-top: 10px;
+    }
+
+    .total-amount {
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+
+    .checkout-button-container {
+        text-align: center;
+    }
+
+    #checkout-button {
+        background-color: #28a745;
+        color: #fff;
+        padding: 15px 30px;
+        font-size: 1.25em;
+        border-radius: 30px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #checkout-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const checkoutButton = document.getElementById("checkout-button");
+        const checkoutModal = new bootstrap.Modal(document.getElementById("checkoutModal"));
+        const continueToPaymentButton = document.getElementById("continueToPayment");
+        const backToDeliveryButton = document.createElement("button");
+        const confirmOrderButton = document.getElementById("confirmOrder");
+        const paymentModalContent = document.getElementById("paymentModalContent");
+        const deliveryModalContent = document.querySelector(".modal-content");
+        const cardDetails = document.getElementById("cardDetails");
+        const cardNumberInput = document.getElementById("cardNumber");
+        const expiryDateInput = document.getElementById("expiryDate");
+        const cvvInput = document.getElementById("cvv");
+
+        // Відкриття модального вікна при натисканні кнопки "Оформити замовлення"
+        checkoutButton.addEventListener("click", () => {
+            checkoutModal.show();
+        });
+
+        // Перехід до вибору способу оплати при натисканні "Продовжити"
+        continueToPaymentButton.addEventListener("click", () => {
+            deliveryModalContent.style.display = "none";
+            paymentModalContent.style.display = "block";
+        });
+
+        // Додаємо кнопку "Повернутись до доставки" та налаштовуємо її
+        backToDeliveryButton.className = "btn btn-secondary";
+        backToDeliveryButton.textContent = "Повернутись до доставки";
+        backToDeliveryButton.style.marginRight = "auto";
+        backToDeliveryButton.addEventListener("click", () => {
+            paymentModalContent.style.display = "none";
+            deliveryModalContent.style.display = "block";
+        });
+        paymentModalContent.querySelector(".modal-footer").prepend(backToDeliveryButton);
+
+        // Показ/приховування полів картки при виборі способу оплати
+        document.querySelectorAll("input[name='paymentOption']").forEach((radio) => {
+            radio.addEventListener("change", (e) => {
+                if (e.target.id === "onlinePayment") {
+                    cardDetails.style.display = "block";
+                } else {
+                    cardDetails.style.display = "none";
+                }
+            });
+        });
+
+        // Форматування поля "Номер картки" (групування цифр по 4)
+        cardNumberInput.addEventListener("input", (e) => {
+            let value = e.target.value.replace(/\D/g, "").substring(0, 16); // Залишаємо тільки цифри, обмежуємо до 16 символів
+            value = value.match(/.{1,4}/g)?.join(" ") || ""; // Додаємо пробіл після кожних чотирьох цифр
+            e.target.value = value;
+        });
+
+        // Форматування поля "Дата закінчення" (MM/YY)
+        expiryDateInput.addEventListener("input", (e) => {
+            let value = e.target.value.replace(/\D/g, "").substring(0, 4); // Залишаємо тільки цифри, обмежуємо до 4 символів
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + "/" + value.substring(2); // Додаємо "/" після двох цифр місяця
+            }
+            e.target.value = value;
+        });
+
+        // Форматування поля "CVV" з приховуванням
+        cvvInput.addEventListener("input", (e) => {
+            let value = e.target.value.replace(/\D/g, "").substring(0, 3); // Залишаємо тільки цифри, обмежуємо до 3 символів
+            e.target.value = value;
+
+            // Затримка для показу символів перед тим, як змінити на приховані
+            clearTimeout(cvvInput._timeout); // Очищаємо попередній таймер, якщо він існує
+            cvvInput.type = "text";
+            cvvInput._timeout = setTimeout(() => {
+                cvvInput.type = "password"; // Приховуємо символи через 500 мс
+            }, 500);
+        });
+
+        // Виведення alert про успішне замовлення при натисканні "Підтвердити"
+        confirmOrderButton.addEventListener("click", () => {
+            alert("Замовлення успішно оформлено!");
+            checkoutModal.hide();
+        });
+    });
+</script>

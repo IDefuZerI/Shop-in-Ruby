@@ -1,0 +1,276 @@
+<style>
+    /* Body Styling */
+    body {
+        background-color: #ffffff; /* Темний фон для контрасту */
+        font-family: 'Montserrat', sans-serif;
+        color: #0049ff;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Header Styling */
+    h1 {
+        font-size: 3em;
+        font-weight: 700;
+        color: #484849;
+        text-align: center;
+        margin-bottom: 40px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
+
+    /* Card Container */
+    .card {
+        max-width: 900px;
+        margin: 30px auto;
+        border-radius: 25px;
+        box-shadow: 0 10px 50px rgba(0, 140, 255, 0.5);
+        background-color: #1e1e1e;
+    }
+
+    .card-body {
+        padding: 40px;
+        background-color: #bbdbf4;
+        border-radius: 25px;
+        box-shadow: 0 8px 20px rgba(0, 64, 232, 0.3);
+    }
+
+    /* Form Controls */
+    .form-control {
+        border-radius: 20px;
+        padding: 16px;
+        font-size: 1.2em;
+        border: 1px solid #444;
+        transition: box-shadow 0.4s, border 0.4s;
+        margin-bottom: 25px;
+        background-color: #4a7893;
+        color: #e0e0e0;
+    }
+
+    .form-control:focus {
+        border-color: #ff6f61;
+        box-shadow: 0 0 10px rgba(255, 111, 97, 0.6);
+    }
+
+    /* Label Styling */
+    .form-label {
+        font-weight: 700;
+        color: #ff6f61;
+        font-size: 1.1em;
+    }
+
+    /* Password Fields */
+    #passwordFields {
+        margin-top: 30px;
+        display: none;
+    }
+
+    /* Change Password Button */
+    #changePasswordButton {
+        background-color: #03a9f4;
+        border-radius: 15px;
+        padding: 12px 25px;
+        font-size: 1.2em;
+        color: white;
+        border: none;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 5px 15px rgba(3, 169, 244, 0.4);
+    }
+
+    #changePasswordButton:hover {
+        background-color: #0288d1;
+    }
+
+    /* Submit Button */
+    .btn-primary {
+        font-size: 1.3em;
+        padding: 14px 35px;
+        background-color: #ff4081;
+        border-radius: 15px;
+        border: none;
+        transition: background-color 0.4s ease;
+        box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
+    }
+
+    .btn-primary:hover {
+        background-color: #f50057;
+    }
+
+    /* Back Button */
+    .btn-secondary {
+        font-size: 1.3em;
+        padding: 14px 35px;
+        background-color: #616161;
+        color: #fff;
+        border-radius: 15px;
+        border: none;
+        transition: background-color 0.4s ease;
+    }
+
+    .btn-secondary:hover {
+        background-color: #424242;
+    }
+
+    /* Flash Messages */
+    .alert {
+        max-width: 350px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+    }
+
+    .alert-success {
+        background-color: #388e3c;
+        color: #ffffff;
+        border-color: #2e7d32;
+    }
+
+    .alert-danger {
+        background-color: #d32f2f;
+        color: #ffffff;
+        border-color: #c62828;
+    }
+
+    .alert .btn-close {
+        font-size: 1.4em;
+        color: #ffffff;
+    }
+
+    /* Social Links */
+    .social-links {
+        display: flex;
+        justify-content: center;
+        margin-top: 25px;
+    }
+
+    .social-links a {
+        margin-right: 25px;
+        font-size: 1.8em;
+        color: #ff6f61;
+        transition: transform 0.4s ease;
+    }
+
+    .social-links a:hover {
+        transform: scale(1.15);
+        color: #d84315;
+    }
+
+    /* Modal Styling */
+    .modal-content {
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(255, 0, 0, 0.4);
+    }
+
+    .modal-header {
+        background-color: #ff6f61;
+        color: white;
+        font-weight: bold;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .modal-footer {
+        border-top: none;
+    }
+
+    .modal-body {
+        padding: 40px;
+    }
+
+    /* Flexbox Layout for the Form */
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+</style>
+
+<!-- HTML Body Content -->
+<h1>Особистий кабінет</h1>
+
+<%= form_with(model: @user, url: profile_path, method: :patch, local: true) do |f| %>
+  <div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1060;">
+    <% if flash[:notice] %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= flash[:notice] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% elsif flash[:alert] %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= flash[:alert] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="form-container">
+        <div class="mb-3">
+          <%= f.label :email, "Email" %> (<%= @user.role %>)
+          <small class="form-text text-muted"><%= @user.email %></small>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :name, "Ім'я" %>
+          <%= f.text_field :name, class: "form-control" %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :surname, "Прізвище" %>
+          <%= f.text_field :surname, class: "form-control" %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :phone_number, "Номер телефону" %>
+          <%= f.telephone_field :phone_number, class: "form-control" %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :address, "Адреса" %>
+          <%= f.text_field :address, class: "form-control" %>
+        </div>
+
+        <!-- Change Password Section -->
+        <button type="button" class="btn btn-warning" id="changePasswordButton">Змінити пароль</button>
+        <div id="passwordFields">
+          <div class="mb-3">
+            <%= f.label :password, "Новий пароль" %>
+            <%= f.password_field :password, class: "form-control" %>
+            <small class="form-text text-muted">Залиште це поле порожнім, якщо не хочете змінювати пароль</small>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :password_confirmation, "Підтвердження пароля" %>
+            <%= f.password_field :password_confirmation, class: "form-control" %>
+          </div>
+        </div>
+
+        <div class="text-end">
+          <%= f.submit "Зберегти зміни", class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="text-center mt-4">
+  <%= link_to "Назад до головної сторінки", root_path, class: "btn btn-secondary" %>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const changePasswordButton = document.getElementById("changePasswordButton");
+        const passwordFields = document.getElementById("passwordFields");
+
+        changePasswordButton.addEventListener("click", function () {
+            if (passwordFields.style.display === "none") {
+                passwordFields.style.display = "block";
+                changePasswordButton.textContent = "Сховати поля для пароля";
+            } else {
+                passwordFields.style.display = "none";
+                changePasswordButton.textContent = "Змінити пароль";
+            }
+        });
+    });
+</script>
